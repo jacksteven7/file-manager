@@ -30,7 +30,7 @@ in another tab, run `rspec` to run all the specs
 > POST `/file`, params: { name: string, tags: array }
 
 
-> GET `/files/:tag_search_query/:page`, params: { tag_search_query: <string>, page: <int> }
+> GET `/files/:tag_search_query/:page`, params: { tag_search_query: string, page: int}
 
 
 
