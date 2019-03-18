@@ -3,7 +3,7 @@ class ResourcesController < ApplicationController
     file = Resource.new(name: params[:name])
     file.add_tags(params[:tags])
     
-    if file.save
+    if file.tags.any? && file.save
       render json: { uuid: file.uuid }, status: :created
     else
       render json: { errors: file.errors }, status: :unprocessable_entity

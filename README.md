@@ -1,24 +1,40 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Settings
 
-Things you may want to cover:
+* Clone repository 
+  git clone https://github.com/jacksteven7/file-manager.git
 
-* Ruby version
+* Go inside the project
+`cd file-manager`
 
-* System dependencies
+* Bundle the project
+`bundle install`
 
-* Configuration
 
-* Database creation
+* Create databases
+`rake db:create`
 
-* Database initialization
+* Create databases
+`rake db:create`
 
-* How to run the test suite
+* Run migrations
+`rake db:migrate`
 
-* Services (job queues, cache servers, search engines, etc.)
+* Start server
+`rails s`
 
-* Deployment instructions
+* Run specs
 
-* ...
+in another tab, run `rspec` to run all the specs
+
+
+## Solution 
+
+> POST `/file`, params: { name: string, tags: array }
+
+
+> GET `/files/:tag_search_query/:page`, params: { tag_search_query: <string>, page: <int> }
+
+
+

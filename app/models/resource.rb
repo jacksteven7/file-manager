@@ -12,6 +12,8 @@ class Resource < ApplicationRecord
 
 
   def add_tags(tags)
+    return self.errors.add(:tags, "insert valid tags") if tags.blank?
+    
     tags.each do | tag |
       t = Tag.find_or_create_by(name: tag)
       self.tags << t
