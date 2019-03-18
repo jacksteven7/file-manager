@@ -11,10 +11,6 @@
 * Bundle the project
 `bundle install`
 
-
-* Create databases
-`rake db:create`
-
 * Create databases
 `rake db:create`
 
