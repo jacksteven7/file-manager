@@ -1,9 +1,11 @@
+require 'will_paginate/array'
 class Resource < ApplicationRecord
   has_and_belongs_to_many :tags
   
   validates :name, :presence => :true
-  before_save :assign_uuid   
+  before_create :assign_uuid   
   
+  #Regex used to extract tags from tag_search_query param
   QRY_TAG_EPX = /[\A(\+\-)](\w*)/
   ADD_TAG_EPX = /\+(\w*)/
   SUB_TAG_EPX = /\-(\w*)/
@@ -20,11 +22,15 @@ class Resource < ApplicationRecord
     self.uuid = SecureRandom.uuid
   end
 
-  def self.search(query, page)
-    tags , tags_in, tags_out = extract_tags(query)
-    resources = extract_resources(tags_in, tags_out)
-    
-    { files: resources, related_tags: tags }
+  def self.search(query)
+    related_tags , tags_in, tags_out = extract_tags(query)
+    resources = extract_resources(tags_in, tags_out).sort
+
+    { files: resources, related_tags: related_tags }
+  end
+
+  def self.paginate(files, page)
+    files.paginate(:page => page, :per_page => 10)
   end
 
   private
@@ -38,11 +44,20 @@ class Resource < ApplicationRecord
   end
 
   def self.extract_resources(tags_in, tags_out)
-    get_resources(tags_in) - get_resources(tags_out)
+    get_resources(tags_in) - get_excluded_resources(tags_out)
   end
 
   def self.get_resources(tags)
-    Resource.joins(:tags).select(:name,:uuid).group(:name,:uuid).having("array_agg(tag_id::integer) @> array#{tags.map(&:id)}")
+    return Resource.joins(:tags).none if tags.empty?
+    Resource.joins(:tags).select(:id,:name,:uuid).group(:id,:name,:uuid).having("array_agg(tag_id::integer) @> array#{tags.map(&:id)}")
+  end
+
+  def self.get_excluded_resources(tags_out)
+    excluded_resources = [] 
+    tags_out.each do | tag |
+      excluded_resources << get_resources([tag])
+    end
+    excluded_resources.flatten
   end
 
 end

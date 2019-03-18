@@ -10,18 +10,14 @@ class ResourcesController < ApplicationController
     end
   end
 
-  def index
-    files = Resource.all.includes(:tags)
-    render json: { results: files }, status: :created
-  end
-
   def search
-    result = Resource.search(params[:tag_search_query], params[:page])
+    result = Resource.search(params[:tag_search_query])
+
     render json: 
     { 
       total_records: result[:files].count,
-      related_tags: result[:related_tags].map {|tag| { name: tag.name, file_count: tag.resources.count } },
-      records: result[:files].map {|d| {name: d.name, uuid: d.uuid}} 
+      related_tags: result[:related_tags].map { |tag| { name: tag.name, file_count: tag.matching_files(result[:files]) }},
+      records: Resource.paginate(result[:files], params[:page]).map { |d| {name: d.name, uuid: d.uuid} } 
     }
   end
 end
