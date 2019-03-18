@@ -25,7 +25,7 @@
 in another tab, run `rspec` to run all the specs
 
 
-## Solution 
+## Testing 
 
 > POST `/file`, params: { name: string, tags: array }
 
